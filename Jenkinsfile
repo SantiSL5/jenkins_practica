@@ -65,7 +65,7 @@ pipeline {
         stage('Deploy_to_Vercel') {
             steps {
                 script {
-                    env.DEPLOY_RESULT = sh(script: """./jenkinsScripts/vercel_deploy/vercel.sh ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${vercel_token}""", returnStatus: true)
+                    env.DEPLOY_RESULT = sh(script: """./jenkinsScripts/vercel.sh ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${vercel_token}""", returnStatus: true)
                 }
             }
         }
