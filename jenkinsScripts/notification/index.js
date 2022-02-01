@@ -1,12 +1,12 @@
 var nodemailer = require('nodemailer');
 
-let pw = process.argv[2]
-let email = process.argv[3]
-let lint = process.argv[4] == 0 ? "Success" : "Failure"
-let cypress = process.argv[5] == 0 ? "Success" : "Failure"
-let readme = process.argv[6] == 0 ? "Success" : "Failure"
-let push = process.argv[7] == 0 ? "Success" : "Failure"
-let vercel = process.argv[8] == 0 ? "Success" : "Failure"
+var pw = process.argv[2]
+var email = process.argv[3]
+var lint = process.argv[4] == 0 ? "Success" : "Failure"
+var cypress = process.argv[5] == 0 ? "Success" : "Failure"
+var readme = process.argv[6] == 0 ? "Success" : "Failure"
+var push = process.argv[7] == 0 ? "Success" : "Failure"
+var vercel = process.argv[8] == 0 ? "Success" : "Failure"
 
 var text = "- Linter_stage: " + lint + '\n' + "- Test_stage: " + cypress + '\n' + "- Update_readme_stage: " + readme + '\n' + "- Push_stage: " + push + '\n' + "- Deploy_to_Vercel_stage: " + vercel
 var transporter = nodemailer.createTransport({
