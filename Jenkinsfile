@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
         github_origin=credentials('github_origin')
-        verel_token=credentials('vercel_token')
+        vercel_token=credentials('vercel_token')
     }
     stages {
         stage('Install') {
@@ -56,9 +56,7 @@ pipeline {
         stage('Push_Changes') {
             steps {
                 script {
-                    script {
-                        env.PUSH_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} ${github_origin}""",returnStatus:true)
-                    }
+                    env.PUSH_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} ${github_origin}""",returnStatus:true)
                 }
             }
         }
