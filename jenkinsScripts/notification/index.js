@@ -1,5 +1,7 @@
 var nodemailer = require('nodemailer');
 
+let pw = process.argv[2]
+let email = process.argv[3]
 let lint = process.argv[4] == 0 ? "Success" : "Failure"
 let cypress = process.argv[5] == 0 ? "Success" : "Failure"
 let readme = process.argv[6] == 0 ? "Success" : "Failure"
@@ -10,14 +12,14 @@ var text = "- Linter_stage: " + lint + '\n' + "- Test_stage: " + cypress + '\n' 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: core.getInput('email'),
-    pass: core.getInput('password')
+    user: email,
+    pass: pw
   }
 });
 
 var mailOptions = {
-  from: core.getInput('email'),
-  to: core.getInput('email'),
+  from: email,
+  to: email,
   subject: "Jenkins results",
   text: text
 };
