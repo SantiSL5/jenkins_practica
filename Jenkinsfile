@@ -59,7 +59,7 @@ pipeline {
                 script {
                     // sh "./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo}"
                     script {
-                        env.README_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} $github_origin""",returnStatus:true)
+                        env.README_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} ${github_origin}""",returnStatus:true)
                     }
                 }
             }
