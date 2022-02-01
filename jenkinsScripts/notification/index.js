@@ -12,13 +12,13 @@ var text = "- Linter_stage: " + lint + '\n' + "- Test_stage: " + cypress + '\n' 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: email,
+    user: "santisolerllin@gmail.com",
     pass: pw
   }
 });
 
 var mailOptions = {
-  from: email,
+  from: "santisolerllin@gmail.com",
   to: email,
   subject: "Jenkins results",
   text: text
