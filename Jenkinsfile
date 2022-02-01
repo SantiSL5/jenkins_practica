@@ -34,7 +34,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    env.CYPRESS_RESULT = sh (script: "npx run cypress",returnStatus: true)
+                    env.CYPRESS_RESULT = sh (script: "npx cypress run",returnStatus: true)
                 }
                 echo env.CYPRESS_RESULT
             }
