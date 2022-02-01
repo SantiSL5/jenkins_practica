@@ -22,7 +22,7 @@ pipeline {
         stage('Linter') {
             steps {
                 script {
-                    env.LINT_RESULT = sh (script: "npm run lint",returnStdout: true)
+                    env.LINT_RESULT = sh (script: "npm run lint",returnStatus: true)
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    env.CYPRESS_RESULT = sh (script: "NO_COLOR=1 ./node_modules/.bin/cypress run",returnStdout: true)
+                    env.CYPRESS_RESULT = sh (script: "npm run cypress",returnStatus: true)
                 }
                 echo env.CYPRESS_RESULT
             }
