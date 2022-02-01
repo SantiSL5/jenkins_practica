@@ -1,5 +1,4 @@
 #!/bin/bash
-git checkout master
 git config --global user.email "santiagosolellin@gmail.com"
 git config --global user.name "SantiSL5"
 git add README.md
