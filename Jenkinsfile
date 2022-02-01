@@ -34,7 +34,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    env.CYPRESS_RESULT = sh (script: "NO_COLOR=1 npx cypress run",returnStdout: true)
+                    env.CYPRESS_RESULT = sh (script: "NO_COLOR=1 ./node_modules/.bin/cypress run",returnStdout: true)
                 }
                 echo env.CYPRESS_RESULT
             }
