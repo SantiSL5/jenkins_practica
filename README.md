@@ -7,147 +7,90 @@ Página de vercel en la que esta publicado el proyecto: https://santi-jenkins.ve
 RESULTADO DE LOS ÚLTIMOS TESTS: [![Cypress.io](https://img.shields.io/badge/tested%20with-Cypress-04C38E.svg)](https://www.cypress.io/)
 <!---End place for the badge -->
 
-# ¿Qué és GitHub Actions?
+# ¿Qué és Jenkins?
 
-GitHub Actions te permite automatizar tu flujo de trabajo de la idea a la producción, GitHub Actions facilita la automatización de todos tus flujos de trabajo de software con CI / CD de clase mundial. Con GitHub Actions puedes compilar, probar e implementar tu código directamente desde GitHub. Permite que tus revisiones de código, la administración de sucursales y la clasificación de problemas funcionen de la manera que desees.
+Jenkins es un servidor de automatización basado en Java autónomo y de código abierto que se puede utilizar para automatizar todo tipo de tareas relacionadas con la creación, prueba y entrega o implementación de software. Está basado en el proyecto Hudson y es, dependiendo de la visión, un fork del proyecto o simplemente un cambio de nombre.
 
 # Documentación:
 
-Antes de empezar, cabe puntualizar que cada job tiene un campo de needs el cual proporciona de que otros jobs depende para ejecutarse, lo he realizado asi para que no haya problemas de ejecución ya que algunos jobs dependen que otros finalicen para su ejecución.
+Para empezar crearemos la pipeline en la que trabajaremos con jenkins:
 
-Para empezar crearemos el repositorio en el que trabajaremos:
+![2](https://user-images.githubusercontent.com/76181286/152047175-66bb057f-608c-4c27-af39-b1cbb173ee1c.png)
 
-![1](https://user-images.githubusercontent.com/76181286/146690291-ee719219-e199-4115-b31f-88f9caad937d.png)
+![3](https://user-images.githubusercontent.com/76181286/152047196-d39a3cac-e235-45ac-9d7d-ed7403966c51.png)
 
-Clonaremos el repositorio que contiene la app sobre la que trabajaremos:
+A continuación en nuestro jenkinsfile crearemos un trigger con pollscm que comprueba si hay cambios cada 3h y en caso de que haya cambios ejecuta la pipeline. Tambien tendremos los tres parametros que usaremos y las stages Install, linter, run app y test:
 
-![2](https://user-images.githubusercontent.com/76181286/146690306-f90a0263-9501-4a36-a688-3bf59fdf358b.png)
+![4](https://user-images.githubusercontent.com/76181286/152047453-9076c648-e495-408e-a02c-3cf9a6c8c1b2.png)
 
-Creamos la carpeta de .github y dentro de esta workflows y actions:
+Crearemos una credencial de jenkins en la que añadiremos el origin de nuestro repositorio con el token:
 
-![3](https://user-images.githubusercontent.com/76181286/146690312-a3bd3fb3-1d69-41eb-902e-942ca898088f.png)
+![5](https://user-images.githubusercontent.com/76181286/152047702-2a589f1c-0069-4ce9-a7d8-0d077d7f7c48.png)
 
-Añadiremos nuestro yaml que contendra nuestro workflow y añadiremos el primer job que es Linter_job:
+Y la añadimos de la siguiente manera a nuestro jenkinsfile:
 
-![5](https://user-images.githubusercontent.com/76181286/146690356-891a2f4f-6124-4c73-9c0e-2d72557c2953.png)
+![6](https://user-images.githubusercontent.com/76181286/152047755-2a84bad4-f3f7-4c10-8515-7cbf625d0646.png)
 
-Hacemos push de los cambios y podemos observar que el código contiene errores:
+Y a continuación creamos las stages update readme y push changes:
 
-![6](https://user-images.githubusercontent.com/76181286/146690377-b1811bf5-fed4-49a1-9556-9852f26b3764.png)
+![7](https://user-images.githubusercontent.com/76181286/152047861-35b6758e-7f74-4f77-8330-6315efa7c245.png)
 
-Una vez que los hemos resuelto podemos observar que el workflow se ejecuta correctamente:
+Las cuales utilizarán los siguientes dos scripts:
 
-![9](https://user-images.githubusercontent.com/76181286/146690400-2ed817af-4a66-4dfe-b988-0184dd388720.png)
+![readmescript](https://user-images.githubusercontent.com/76181286/152048184-617c9d42-597c-4984-a084-edb8cb94c292.png)
 
-A continuación crearemos el Cypress_job el cual hara también tests sobre nuestro código y el resultado lo introducira en un artifact, cabe añadir que para este workflow hay que añadir:
+![pushscript](https://user-images.githubusercontent.com/76181286/152048215-ef0370cb-ba51-45be-bd85-872a6d990374.png)
 
-- "continue-on-error: true" ( Para que el workflow se siga ejecutando aunque encuentre errores )
+Para el deploy crearemos un token de vercel:
 
-![10](https://user-images.githubusercontent.com/76181286/146690494-87991952-4ce2-4e6f-996c-7941542b9fec.png)
+![9](https://user-images.githubusercontent.com/76181286/152047944-12add8b1-d0e5-4232-8e07-0ca6a1412eb5.png)
 
-Realizamos un push de los cambios y podemos ver que el workflow funciona correctamente:
+Y crearemos una credencial con el token de vercel:
 
-![11](https://user-images.githubusercontent.com/76181286/146690521-630cae38-4b1c-4372-845b-24e93531a8c9.png)
+![8](https://user-images.githubusercontent.com/76181286/152047994-edc84864-90ea-4c53-894e-8c2d54bffc23.png)
 
-También podemos descargar el artifact para observar que efectivamenta ha guardado el resultado:
+Añadiremos la credencial de vercel a nuestro jenkinsfile:
 
-![12](https://user-images.githubusercontent.com/76181286/146690537-69dbcb00-b29e-45fc-a3a6-53963b2e5e8f.png)
+![10](https://user-images.githubusercontent.com/76181286/152048018-58c6dbc3-c66d-469a-95e6-1108b41a8d5e.png)
 
-Para añadir el badge al readme he realizado un action personalizado que ejecuta un script de bash que mediante grep busca la linea en la que esta ubicada la linea con el espacio reservado para la badget ( Entre los comentarios ) y sustituye esa línea en caso de que sea correcto mostrara el badged de tests correctos además del texto correspondiente y en caso contrario el de test fallidos con el texto correspondiente:
+Y creamos un script para vercel:
 
-A continuación podemos observar el script:
+![11](https://user-images.githubusercontent.com/76181286/152048107-f345d2f8-ad8c-417c-9c49-a3d06c46744a.png)
 
-![script](https://user-images.githubusercontent.com/76181286/146690648-a465f66a-4b44-42f1-8b5b-a2ce522bb2b2.png)
+Y una stage para el deploy:
 
-Con sus pruebas de funcionamiento en local:
+![vercel](https://user-images.githubusercontent.com/76181286/152048376-0080b0b3-1d6f-4f69-975a-84b9961aa28b.png)
 
-![13](https://user-images.githubusercontent.com/76181286/146690662-a0b45fdd-9ea4-47a3-b75c-76620095cf97.png)
+Para la notificación crearemos una contraseña de aplicación en nuestra cuenta de gooogle:
 
-También el action:
+![13](https://user-images.githubusercontent.com/76181286/152048496-9bf39d8c-52a4-489c-bbe7-f2114efe15a0.png)
 
-![14](https://user-images.githubusercontent.com/76181286/146690687-91eae42e-02f2-480f-bd6f-6a315c211f2b.png)
+Crearemos con ella una credencial de jenkins:
 
-Y la modificación del workflow con el job Add_badge_job, la cual descarga el artifact del job de cypress y ejecuta el action personalizado a partir de él:
+![14](https://user-images.githubusercontent.com/76181286/152048544-2c346669-d8a1-49bd-a10c-7a65313a3a1a.png)
 
-![15](https://user-images.githubusercontent.com/76181286/146690722-aecb743a-836d-49b2-a350-bfa85b4dc77a.png)
+Modificaremos los parametros de nuestro jenkinsfile de esta manera:
 
-Realizamos un push de los cambios y podemos observar que el workflow se ha ejecutado correctamente:
+![15](https://user-images.githubusercontent.com/76181286/152048646-ba57741e-7b8e-4726-9f86-1d5eebdf3799.png)
 
-![addbadge](https://user-images.githubusercontent.com/76181286/146691014-2363e8d6-28e3-48a7-8a00-c2f9a9c02878.png)
+Y crearemos la stage de notificación:
 
-Y que la badge resultante ha sido introducida al README.md:
+![16](https://user-images.githubusercontent.com/76181286/152048720-4c3e239e-4337-4600-99c6-d77f1e22aa17.png)
 
-![resultadobadge](https://user-images.githubusercontent.com/76181286/146691051-b77e3810-ff4f-4ae3-901a-ade841e9c061.png)
+Con el script siguiente:
 
-Después crearemos un job para desplegar la app de vercel, para ello obtendremos las credenciales necesarias de la app importando un repositorio primero después de crearnos la cuenta:
+![17](https://user-images.githubusercontent.com/76181286/152048821-cc98c791-77ab-49d8-9d6b-b9999a3602e9.png)
 
-![16](https://user-images.githubusercontent.com/76181286/146690793-f9ee92de-841a-45e6-b318-77086c67db51.png)
+El jenkinsfile nos quedaria de la siguiente manera:
 
-Y cuando lo creamos podemos ir a:
+![j1](https://user-images.githubusercontent.com/76181286/152049094-70b228ff-155e-4996-8f11-8595891e03d7.png)
+![j2](https://user-images.githubusercontent.com/76181286/152049105-6daa58d0-f5ea-42b9-8926-e3b113564a11.png)
 
-- Los ajustes generales para generar nuestro token de vercel
-- Los ajustes personales para acceder nuestro identificador personal o de organización
-- Los ajustes de proyecto para acceder a nuestro identificador de proyecto
+Y al ejecutarlo podemos ver que todo funciona correctamente:
 
-Con esta información crearemos los correspondientes secrets en github:
+![19](https://user-images.githubusercontent.com/76181286/152049177-90654bcf-abf9-42a4-957e-96e5ef9e8383.png)
 
-![vercel_secrets](https://user-images.githubusercontent.com/76181286/146690888-c988be5b-550b-462d-93d7-8bf29c14e7a4.png)
+Y que nos envia un correo con el resultado:
 
-Con estos secrets iremos a nuestro workflow y crearemos el job de Deploy_job con nuestras credenciales:
+![18](https://user-images.githubusercontent.com/76181286/152049217-79174a68-eca8-4df0-9cb0-d3dec9b67c69.png)
 
-![17](https://user-images.githubusercontent.com/76181286/146690904-383c776b-b34e-48f1-804b-f475b9277849.png)
-
-Con esto realizamos el push de los cambios y podemos observar que el workflow se ha realizado correctamente:
-
-![deploy](https://user-images.githubusercontent.com/76181286/146691083-df08e1ad-ea4c-4e23-9666-76ef2aa62f1a.png)
-
-Que en el dashboard de vercel se ha ejecutado el deploy:
-
-![18](https://user-images.githubusercontent.com/76181286/146691110-5dee1fd2-d208-42e8-9ca1-f52afe96132b.png)
-
-Y que podemos acceder a nuestra web desplegada:
-
-![pagina](https://user-images.githubusercontent.com/76181286/146691124-c3bc9ef2-2f33-4ee8-8d16-975fbadab7ab.png)
-
-Para finalizar crearemos un action que envie un correo con el resultado de cada job:
-
-![20](https://user-images.githubusercontent.com/76181286/146691156-5dc12579-28c4-432f-9430-76230016ea5a.png)
-
-Para esto deberemos crear una aplicación con nodejs que utilizará los inputs del action que introduciremos en el workflow:
-
-![21](https://user-images.githubusercontent.com/76181286/146691172-16dc519e-a07c-48e5-846d-916d9b1a435f.png)
-
-Podemos observar que en los test locales funciona perfectamente:
-
-![testemail](https://user-images.githubusercontent.com/76181286/146691195-a0fd1495-9956-4e14-80f0-7b841776423e.png)
-
-![testcompletedgood](https://user-images.githubusercontent.com/76181286/146691246-9195a593-47e3-44e0-9181-44b8cbd68210.png)
-
-Para conseguir el password de applicacion de nuestro correo de gmail, accederemos a seguridad y a generar password de aplicación:
-
-![passgoogle](https://user-images.githubusercontent.com/76181286/146691264-e7af2a71-7291-429a-ad95-10a346919819.png)
-
-Con esto podemos realizar los test locales y además crearemos dos secrets más uno con el email y el otro con la password de aplicación de la siguiente manera:
-
-
-![allsecrets](https://user-images.githubusercontent.com/76181286/146691311-de2f55b6-8de3-495b-8b0c-6591406f8dcc.png)
-
-Además debemos hacer un build a nuestra aplicación:
-
-![19](https://user-images.githubusercontent.com/76181286/146691338-83391cee-3c5b-44cc-aeb8-e9b3c62d3895.png)
-
-Y instalar:
-
-![paquetes](https://user-images.githubusercontent.com/76181286/146691374-3bbd891a-a16a-42c6-a694-c38f8be2d86b.png)
-
-Con ello crearemos nuestro job Notificatiion_job con las especificaciones requeridas:
-
-![emailjob](https://user-images.githubusercontent.com/76181286/146691403-0d8f93f0-3a91-4b12-a214-e99b1bea9adf.png)
-
-Hacemos un push de los cambios y podemos observar que se ejecuta correctamente el workflow:
-
-![final](https://user-images.githubusercontent.com/76181286/146691429-b8441d69-5fd6-4a00-879f-d6232c309a04.png)
-
-Y podemos observar que el email se ha enviado correctamente:
-
-![mailfinalnice](https://user-images.githubusercontent.com/76181286/146691437-d6988d9f-a11e-4cb5-8f56-639cee2de66b.png)
