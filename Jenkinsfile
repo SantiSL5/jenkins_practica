@@ -10,12 +10,14 @@ pipeline {
     }
     environment {
         github_origin=credentials('github_origin')
+        verel_token=credentials('vercel_token')
     }
     stages {
         stage('Install') {
             steps {
                 sh "apt-get update -y && apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb"
                 sh "npm install cypress -g"
+                sh "npm install -g vercel"
                 sh "npm install"
             }
         }
@@ -47,21 +49,24 @@ pipeline {
         stage('Update_Readme') {
             steps {
                 script {
-                    // echo env.CYPRESS_RESULT
                     env.README_RESULT = sh(script:"""./jenkinsScripts/readmeScript.sh ${env.CYPRESS_RESULT}""",returnStatus:true)
                 }
-                // sh '''
-                //     env.README_RESULT = ./jenkinsScripts/readmeScript.sh $env.CYPRESS_RESULT
-                // '''
             }
         }
         stage('Push_Changes') {
             steps {
                 script {
-                    // sh "./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo}"
                     script {
-                        env.README_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} ${github_origin}""",returnStatus:true)
+                        env.PUSH_RESULT = sh(script:"""./jenkinsScripts/pushScript.sh ${params.Ejecutor} ${params.Motivo} ${github_origin}""",returnStatus:true)
                     }
+                }
+            }
+        }
+        stage('Deploy_to_Vercel') {
+            steps {
+                script {
+                    sh "npm run build"
+                    env.DEPLOY_RESULT = sh(script: """./jenkinsScripts/vercel_deploy/vercel.sh ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${vercel_token}""", returnStatus: true)
                 }
             }
         }
