@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Run_App') {
             steps {
-                sh "npm run dev&"
+                sh "npm run build && npm run start&"
             }
         }
         stage('Test') {
@@ -65,7 +65,6 @@ pipeline {
         stage('Deploy_to_Vercel') {
             steps {
                 script {
-                    sh "npm run build"
                     env.DEPLOY_RESULT = sh(script: """./jenkinsScripts/vercel_deploy/vercel.sh ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${vercel_token}""", returnStatus: true)
                 }
             }
