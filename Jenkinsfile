@@ -70,7 +70,7 @@ pipeline {
         }
         stage('Notificacion') {
             steps {
-                sh "node ./jenkinsScripts/notificacion/index.js ${gmail_pw} ${params.Correo_notificación} ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${env.DEPLOY_RESULT}"
+                sh "node ./jenkinsScripts/notification/index.js ${gmail_pw} ${params.Correo_notificación} ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${env.DEPLOY_RESULT}"
             }
         }
     }
