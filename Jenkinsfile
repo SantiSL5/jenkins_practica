@@ -6,11 +6,12 @@ pipeline {
     parameters {
         string(name: 'Ejecutor', defaultValue: 'Santi')
         string(name: 'Motivo', defaultValue: 'test')
-        string(name: 'Correo notificación')
+        string(name: 'Correo_notificación', defaultValue: 'santisolerllin@gmail.com')
     }
     environment {
         github_origin=credentials('github_origin')
         vercel_token=credentials('vercel_token')
+        gmail_pw = credentials('gmail_pw')
     }
     stages {
         stage('Install') {
@@ -65,6 +66,11 @@ pipeline {
                 script {
                     env.DEPLOY_RESULT = sh(script: """./jenkinsScripts/vercel.sh ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${vercel_token}""", returnStatus: true)
                 }
+            }
+        }
+        stage('Notificacion') {
+            steps {
+                sh "node ./jenkinsScripts/notificacion/index.js ${gmail_pw} ${params.Correo_notificación} ${env.LINT_RESULT} ${env.CYPRESS_RESULT} ${env.README_RESULT} ${env.PUSH_RESULT} ${env.DEPLOY_RESULT}"
             }
         }
     }

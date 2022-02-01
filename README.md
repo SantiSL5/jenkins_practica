@@ -1,6 +1,6 @@
 Example of nextjs project using Cypress.io
 
-Página de vercel en la que esta publicado el proyecto: https://github-actions-practica.vercel.app/
+Página de vercel en la que esta publicado el proyecto: https://santi-jenkins.vercel.app/
 
 <!---Don't modify next lines and always only one line between start and end -->
 <!---Start place for the badge -->
